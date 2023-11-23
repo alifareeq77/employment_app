@@ -1,10 +1,11 @@
 from djoser.views import UserViewSet
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-from users_app.models import Appliers
-from users_app.serializers import AppliersSerializer
+from form_app.views import IsStaff
+from users_app.models import Appliers, Owner
+from users_app.serializers import AppliersSerializer, OwnerSerializer
 
 
 class ActivateUser(UserViewSet):
@@ -26,3 +27,15 @@ class AppliersViewSet(ModelViewSet):
     queryset = Appliers.objects.all()
     serializer_class = AppliersSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        return Appliers.objects.filter(user=user)
+
+class OwnerViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Owner.objects.filter(user=user)
