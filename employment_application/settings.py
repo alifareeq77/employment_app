@@ -27,7 +27,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-
+LOGIN_URL = 'login'
+REGISTER_URL = ''
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,6 +58,9 @@ EMAIL_HOST_USER = 'alifareeq77@gmail.com'
 EMAIL_HOST_PASSWORD = 'mjixualtalodixhr'
 EMAIL_USE_TLS = True
 APPEND_SLASH = False
+AUTHENTICATION_BACKENDS = [
+    'users_app.custom_auth_backend.CustomAuthBackend',  # Your custom backend
+]
 DJOSER = {
     'user_delete': 'users_app.serializers.UserSerializer',
     'USER_CREATE_PASSWORD_RETYPE': True,

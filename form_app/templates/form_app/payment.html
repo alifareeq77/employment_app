@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>payment</title>
+</head>
+<body>
+{#<form action="?" method="post">#}
+{#    {% csrf_token %}#}
+{#    <input type="submit" value="Submit">#}
+{#</form>#}
+{% for form in forms %}
+<a href="{% url 'pay_for_form' form.id %}">{{ form.name }}</a>
+<p>{{ form.owner.first_name }} {{ form.owner.last_name }}</p>
+{% endfor %}
+
+</body>
+</html>

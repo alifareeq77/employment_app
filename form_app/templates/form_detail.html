@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ form.name }}</title>
+</head>
+<body>
+<h1>Form Details</h1>
+<p>Form Name: {{ form.name }}</p>
+<p>Description: {{ form.description }}</p>
+<p>Owner: {{ form.owner.first_name }} {{ form.owner.last_name }}</p>
+
+<h2>Appliers</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for form_applier in form_appliers %}
+        <tr>
+            <td>{{ form_applier.applier.user.email }}</td>
+            <td>{{ form_applier.applier.user.email }}</td>
+            <td>{{ form_applier.applier.first_name }}</td>
+            <td>{{ form_applier.applier.last_name }}</td>
+            <td>{{ form_applier.get_status_display }}</td>
+            <td><a href="{% url 'delete_form_applier' form.id form_applier.applier.id %}"
+                   style="background-color: darkred; color: white">
+                remove
+            </a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Options</title>
+</head>
+<body>
+    <h1>Select Your Payment Plan</h1>
+    <form action="?" method="post">
+        {% csrf_token %}
+        <label for="plan">Choose Your Payment Plan:</label>
+        <br>
+        <input type="radio" id="six-months" name="plan" value="6" required>
+        <label for="six-months">6-Month Plan</label>
+        <br>
+        <input type="radio" id="three-months" name="plan" value="3" required>
+        <label for="three-months">3-Month Plan</label>
+        <br>
+        <br>
+        <input type="submit" value="pay with Zain cash">
+    </form>
+</body>
+</html>
