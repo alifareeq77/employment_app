@@ -29,4 +29,5 @@ class TransactionHistory(models.Model):
     user = models.ForeignKey('users_app.Appliers', on_delete=models.CASCADE)
     amount = models.IntegerField(choices=SubscriptionChoices.choices)
     transaction_id = models.CharField(max_length=256)
-    form = models.ForeignKey('form_app.Form', on_delete=models.DO_NOTHING)
+    def __str__(self):
+        return self.transaction_id

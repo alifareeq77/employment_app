@@ -6,7 +6,7 @@ HOSTING_IP = '127.0.0.1:8000'
 secret = '$2y$10$hBbAZo2GfSSvyqAyV2SaqOfYewgYpfR1O19gIh4SqyGWdmySZYPuS'
 
 
-def pay(form_id,service):
+def pay(user_id,service):
     msisdn = 9647835077893
     merchantid = '5ffacf6612b5777c6d44266f'
     production_cred = False
@@ -17,14 +17,14 @@ def pay(form_id,service):
         amount = 6
     amount = amount * 1320
     service_type = service
-    form_id = form_id
+    user_id = user_id
     redirection_url = f'{HOSTING_IP}/transaction'
 
     data = {
         'amount': amount,
         'serviceType': service_type,
         'msisdn': msisdn,
-        'form_id': form_id,
+        'user_id': user_id,
         'redirectUrl': redirection_url,
         'iat': time.time(),
         'exp': time.time() + 60 * 60 * 4

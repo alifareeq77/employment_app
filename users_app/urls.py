@@ -20,7 +20,5 @@ urlpatterns = [
     path('user/signup', views.register, name='signup'),
     path('user/login', views.login_view, name='login'),
     path('user/logout', views.logout_view, name='logout'),
-    path('appliers/create/', views.applier_create, name='applier_create'),
-    path('owners/create/', views.owner_create, name='owner_create'),
-    path('auth_test', views.auth_test, name='AUTH_TEST'),
+    path('', views.index, name='index')
 ]

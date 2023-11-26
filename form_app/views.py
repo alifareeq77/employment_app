@@ -43,24 +43,24 @@ class FormAppliersViewSet(ModelViewSet):
     permission_classes = [IsStaff, ]
 
 
-@user_passes_test(_is_completed, is_staff)
-def payment_test(request):
-    if request.method == 'POST':
-        return redirect(pay(1, 3))
-    forms = Form.objects.all()
-    return render(request, 'form_app/payment.html', {
-        "forms": forms,
-    })
+# @user_passes_test(_is_completed, is_staff)
+# def payment_test(request):
+#     if request.method == 'POST':
+#         return redirect(pay(1, 3))
+#     forms = Form.objects.all()
+#     return render(request, 'form_app/payment.html', {
+#         "forms": forms,
+#     })
 
 
 @login_required
-def pay_for_form(request,form_id):
+def pay_for_form(request):
     if request.method == 'POST':
         form = PaymentOptionForm(request.POST)
         if form.is_valid():
             # Process the selected payment plan
             selected_plan = form.cleaned_data['plan']
-            return redirect(pay(service=int(selected_plan), form_id=form_id, ))
+            return redirect(pay(service=int(selected_plan), user_id=request.user.id, ))
     return render(request, 'pay_for_form.html')
 
 

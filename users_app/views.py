@@ -8,8 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from form_app.views import IsStaff
-from users_app.forms import RegisterForm, LoginForm, ApplierForm, OwnerForm
-from users_app.models import Appliers, Owner, CustomUser
+from users_app.forms import RegisterForm, LoginForm
+from users_app.models import Appliers, CustomUser
 from users_app.serializers import AppliersSerializer, OwnerSerializer
 
 
@@ -52,19 +52,19 @@ models view
 def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             user = CustomUser.objects.create_user(form.cleaned_data['email'], form.cleaned_data['password1'])
             if user is not None:
                 user = authenticate(username=form.cleaned_data['email'],
                                     password=form.cleaned_data['password1'])
                 login(request=request, user=user)
-                if form.cleaned_data["type"] == 'applier':
-                    return redirect('applier_create')
-                elif form.cleaned_data["type"] == 'owner':
-                    return redirect('owner_create')
-                else:
-                    return HttpResponse("dont play with the form :)")
+                form.cleaned_data.pop('email')
+                form.cleaned_data.pop('password1')
+                form.cleaned_data.pop('password2')
+                Appliers.objects.create(**form.cleaned_data, user=user)
+                user.is_completed = True
+                user.save()
+                return redirect('pay_for_form')
     else:
         if not request.user.is_anonymous:
             return redirect('index')
@@ -81,11 +81,10 @@ def login_view(request):
             user = authenticate(username=form.cleaned_data['email'], password=form.cleaned_data['password'])
             if user is not None:
                 login(request, user)
-                print('logged in ')
                 if user.is_completed:
                     return redirect('index')
                 else:
-                    redirect('applier_create')
+                    redirect('index')
     else:
         form = LoginForm()
 
@@ -103,47 +102,5 @@ def not_staff(user):
 
 
 @login_required
-@user_passes_test(not_staff)
-def applier_create(request):
-    if request.user.is_completed == False:
-        if request.method == 'POST':
-            form = ApplierForm(request.POST)
-            if form.is_valid():
-                applier = form.save(commit=False)
-                user = CustomUser.objects.filter(email=request.user.email)[0]
-                applier.user = user
-                applier.save()
-                user.is_completed = True
-                user.save()
-                return redirect('pay')
-
-        else:
-            form = ApplierForm()
-
-        return render(request, 'applier_create.html', {'form': form})
-    else:
-        return redirect('pay')
-
-
-@login_required
-def owner_create(request):
-    if request.method == 'POST':
-        form = OwnerForm(request.POST)
-
-        if form.is_valid():
-            owner = form.save(commit=False)
-            owner.user = request.user
-            request.user.is_staff = True
-            request.user.is_completed = True
-            owner.save()
-            request.user.save()
-            return redirect('form_create')
-
-    else:
-        form = OwnerForm()
-
-    return render(request, 'owner_create.html', {'form': form})
-
-
-def auth_test(request):
-    return render(request, 'auth_test.html')
+def index(request):
+    return render(request, 'base.html')
