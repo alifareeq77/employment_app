@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from rest_framework.permissions import BasePermission
 from rest_framework.viewsets import ModelViewSet
 
-from form_app.forms import FormForm
+from form_app.forms import FormForm, PaymentOptionForm
 from form_app.models import Form, FormAppliers, TransactionHistory
 from form_app.payment_zain import pay, transaction_analysis
 from form_app.srializers import FormSerializer
@@ -54,9 +54,13 @@ def payment_test(request):
 
 
 @login_required
-def pay_for_form(request):
+def pay_for_form(request,form_id):
     if request.method == 'POST':
-        return redirect(pay(service=3, form_id=1, ))
+        form = PaymentOptionForm(request.POST)
+        if form.is_valid():
+            # Process the selected payment plan
+            selected_plan = form.cleaned_data['plan']
+            return redirect(pay(service=int(selected_plan), form_id=form_id, ))
     return render(request, 'pay_for_form.html')
 
 
@@ -110,6 +114,8 @@ def form_detail(request, pk):
         return redirect('form_list')
 
 
+@login_required
+@user_passes_test(is_staff)
 def delete_form_applier(request, form_pk, applier_pk):
     form_applier = FormAppliers.objects.get(form_id=form_pk, applier_id=applier_pk)
     form_applier.delete()

@@ -67,7 +67,7 @@ def register(request):
                     return HttpResponse("dont play with the form :)")
     else:
         if not request.user.is_anonymous:
-            return redirect('test')
+            return redirect('index')
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
@@ -83,7 +83,7 @@ def login_view(request):
                 login(request, user)
                 print('logged in ')
                 if user.is_completed:
-                    return redirect('test')
+                    return redirect('index')
                 else:
                     redirect('applier_create')
     else:

@@ -24,7 +24,7 @@ def pay(form_id,service):
         'amount': amount,
         'serviceType': service_type,
         'msisdn': msisdn,
-        'orderId': order_id,
+        'form_id': form_id,
         'redirectUrl': redirection_url,
         'iat': time.time(),
         'exp': time.time() + 60 * 60 * 4
